@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Anime Fox</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="title" content="Anime Fox">
+        <meta name="author" content="Dineshkarthik">
+        <meta name="description" content="Single place to follow latest episodes of animes.">
+        <meta property="og:site_name" content="Anime Fox">
+        <meta property="og:title" content="Anime Fox" />
+        <meta property="og:description" content="Single place to follow latest episodes of animes." />
+        <meta property="og:image" itemprop="image" content="http://animefox.dineshkarthik.me/static/images/favicon-16x16.png">
+        <meta property="og:image:width" content="300">
+        <meta property="og:image:height" content="200">
+        <meta property="og:type" content="website" />
+        <meta property="og:updated_time" content="1440432930" />
+        <link rel="shortcut icon" href="./static/images/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+        <style>
+            img {
+            width: 280px;
+            height: 300px;
+            }
+            .navbar {
+            background-color: #B0A1EE;
+            }
+            .container-fluid{
+            background: #c4d3f6;
+			}
+			@font-face {
+			font-family: Poppins-Regular;
+			src: url('../fonts/poppins/Poppins-Regular.ttf'); 
+			}
+
+			@font-face {
+			font-family: Poppins-Bold;
+			src: url('../fonts/poppins/Poppins-Bold.ttf'); 
+			}
+        </style>
+    </head>
+    <body>
+        <!--Navbar-->
+		<nav class="navbar navbar-dark default-color" style="height:54px">
+			<div class="flex items-center flex-shrink-0 text-white ">
+				<span class="font-semibold text-xl tracking-tight mr-3">Anime Fox</span>
+				<ul class="flex">
+					<li class="mr-6">
+					  <a class="text-blue-500 hover:text-blue-800" href=/>Ongoing</a>
+					</li>
+					<li class="mr-6">
+					  <a class="text-blue-500 hover:text-blue-800" href="list.html">List</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+        <!--/.Navbar-->
+        <div class="container-fluid">
+            <div class="content-center" id="template-container">
+                <script type="text/html" id="plot-template">
+                    <div class="row flex justify-center">
+                    <% animeList  = _.sortBy(animeList, 'name') %>
+                    <%  i=0 %>
+                    <% _.each(animeList, function(anime) { %>
+                        <%  i = i+1 %>
+                        <div class="col-md-3   bg-gray-200 hover:bg-gray-300 m-3 rounded-lg">
+                        	<p class="text-xl leading-tight max-w-sm h-12 m-2 mt-3">
+                                <%= anime.name %>
+                            </p>
+                            <img alt="No Image" class="rounded  block mx-auto" src="<%= anime.image %>" />
+							<div class="px-6 py-4">
+								<% _.each(anime.genre, function(genre) { %>
+								<span class="inline-block bg-blue-200 rounded-full px-2  text-sm font-semibold text-blue-700 mr-1"><%= genre %></span>
+								<% }); %>
+							</div>
+							<p class="text-sm leading-tight max-w-sm h-15 m-2">
+								<b>Released:</b> <%= anime.released_year %></br>
+								<b>Status:</b> <%= anime.status %></br>
+								<% if (anime.other_name) { %>
+									<b>Other name:</b> <%= anime.other_name %></br>
+								<% } %>
+                            </p>
+                            <a href="<%= anime.url %>" class="btn btn-info bg-blue-500 hover:bg-blue-700 m-3 content-center block" role="button" target="_blank">Watch</a>
+                        </div>
+                        <% if (i== 3) { %>
+                            <% i=0 %>
+                            </div>
+                            <div class="row flex justify-center">
+                        <% } %>
+                    <% }); %>
+                    </div>
+                </script>
+            </div>
+        </div>
+        <footer class="footer" style="background-color:#B0A1EE;">
+            <div class="container text-center">
+                <p>Handcrafted with <i class="fa fa-heart"></i> by <a target="_blank" href="http://dineshkarthik.me" title="developed by"> <strong>DK</strong></a></p>
+            </div>
+        </footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            (function ($) {"use strict";})(jQuery);
+            var template = $("#plot-template").html();
+			function render(data){
+            	animeList= data;
+            	$("#template-container").html(_.template(template, {
+            		animeList: data
+            	  }));
+            }
+			$.ajax({
+				url : 'https://extendsclass.com/api/json-storage/bin/fcbdaca',
+				type : 'GET',
+				dataType:'json',
+				headers: {
+    				"Security-key": "u9&WSBGa!3Jg",
+  				},
+				success : function(data) {              
+					render(data);
+				},
+				error : function(request,error)
+				{
+					alert("Request: "+JSON.stringify(request));
+				}
+			});
+        </script>
+    </body>
+</html>
