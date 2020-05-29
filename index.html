@@ -128,7 +128,7 @@
 			e.preventDefault();
 			$.ajax({
 				type: "GET",
-				url: "/crawler",
+				url: "https://animefox.herokuapp.com/crawler",
 				success: function(result) {
 					$("#template-container").empty();
 					getData();
