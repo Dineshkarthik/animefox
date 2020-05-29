@@ -15,11 +15,14 @@ from optparse import OptionParser
 from sqlalchemy import create_engine
 from flask import Flask, json, request, jsonify
 from flask_basicauth import BasicAuth
+from flask_cors import CORS, cross_origin
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.secret_key = hashlib.sha1(os.urandom(128)).hexdigest()
 
 THIS_DIR: str = os.path.dirname(os.path.abspath(__file__))
@@ -115,6 +118,7 @@ def update_json(data: dict, json_url: str):
 
 
 @app.route("/crawler", methods=["GET"])
+@cross_origin()
 def crawler():
     """Function to crawl and update anime schedule."""
     updated = []
