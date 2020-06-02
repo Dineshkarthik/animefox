@@ -1,6 +1,6 @@
 """Script to keep me posted on new anime episodes."""
 import os
-import hashlib
+import json
 from typing import List
 from datetime import datetime
 from email.mime.text import MIMEText
@@ -11,36 +11,13 @@ import jinja2
 import smtplib
 import requests
 from bs4 import BeautifulSoup
-from optparse import OptionParser
-from sqlalchemy import create_engine
-from flask import Flask, json, request, jsonify
-from flask_basicauth import BasicAuth
-from flask_cors import CORS, cross_origin
-from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.ext.declarative import declarative_base
 
+from . import app, db
+from .models import Anime
 
-app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-app.secret_key = hashlib.sha1(os.urandom(128)).hexdigest()
+ROOT_DIR: str = os.path.abspath(os.curdir)
 
-THIS_DIR: str = os.path.dirname(os.path.abspath(__file__))
-app.config.from_pyfile(os.path.join(THIS_DIR, "config.py"))
-basic_auth = BasicAuth(app)
-
-db = create_engine(app.config["DATABASE_URI"])
-
-Base = declarative_base()
-Base.metadata.reflect(db)
-Session = sessionmaker(bind=db)
-session = Session()
-
-
-class Anime(Base):
-    """Class for translation table."""
-
-    __table__ = Base.metadata.tables[app.config["TABLE_NAME"]]
+session = db.session
 
 
 def get_anime(is_active: bool, is_all: bool = True) -> List:
@@ -49,8 +26,8 @@ def get_anime(is_active: bool, is_all: bool = True) -> List:
     archive_list = []
     all_list = []
     for anime in session.query(Anime).all():
-        _dict = anime.__dict__
-        _dict.pop("_sa_instance_state")
+        _dict = anime.__dict__.copy()
+        _dict.pop("_sa_instance_state", None)
         if _dict["site"] == "gogoanime":
             _dict[
                 "url"
@@ -117,8 +94,6 @@ def update_json(data: dict, json_url: str):
     requests.put(json_url, headers=headers, data=data)
 
 
-@app.route("/crawler", methods=["GET"])
-@cross_origin()
 def crawler():
     """Function to crawl and update anime schedule."""
     updated = []
@@ -180,6 +155,7 @@ def crawler():
                                 episode=dict_episode_name[current_episode],
                             )
                         )
+    session.commit()
 
     if updated:
         send_mail(updated)
@@ -191,42 +167,4 @@ def crawler():
             anime["url"] = f"{anime['base_url']}/category/{anime['anime_url']}"
         update_json(json.dumps(_list), app.config["LIST_URL"])
 
-    session.commit()
-    return jsonify({"success": True})
-
-
-@app.route("/add", methods=["POST"])
-@basic_auth.required
-def add_anime():
-    """Add new anime to list."""
-    _datetime = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-    anime = Anime()
-    anime.name = request.form["name"]
-    anime.base_url = request.form["base_url"]
-    anime.anime_url = request.form["anime_url"]
-    anime.active = bool(request.form["active"].lower() == "true")
-    anime.episode = request.form["episode"]
-    anime.last_refreshed_at = _datetime
-    anime.updated_at = _datetime
-    anime.site = request.form["site"]
-    anime.image = request.form["image"]
-    anime.genre = request.form["genre"]
-    anime.other_name = request.form["other_name"]
-    anime.status = request.form["status"]
-    anime.released_year = request.form["released_year"]
-    session.add(anime)
-    session.commit()
-    return jsonify(request.form)
-
-
-if __name__ == "__main__":
-    parser = OptionParser()
-    parser.add_option(
-        "-p",
-        "--port",
-        dest="port",
-        help="Port on which the app will run",
-        default=5000,
-    )
-    (options, args) = parser.parse_args()
-    app.run(host="0.0.0.0", debug=True, port=int(options.port))
+    return True
