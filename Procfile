@@ -1,1 +1,1 @@
-web: python kyuubi.py --port $PORT
+web: flask run -p $PORT
