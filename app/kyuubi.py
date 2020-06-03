@@ -15,7 +15,8 @@ from bs4 import BeautifulSoup
 from . import app, db
 from .models import Anime
 
-ROOT_DIR: str = os.path.abspath(os.curdir)
+THIS_DIR: str = os.path.dirname(os.path.abspath(__file__))
+
 
 session = db.session
 
@@ -64,7 +65,9 @@ def scrap_url(_url: str):
 
 def send_mail(updated_list: list):
     """Function to generate email template and send it."""
-    template_loader = jinja2.FileSystemLoader(searchpath="./templates")
+    template_loader = jinja2.FileSystemLoader(
+        searchpath=os.path.join(THIS_DIR, "templates")
+    )
     template_env = jinja2.Environment(loader=template_loader)
     template_file = "email.html"
     template = template_env.get_template(template_file)
@@ -166,5 +169,4 @@ def crawler():
         for anime in _list:
             anime["url"] = f"{anime['base_url']}/category/{anime['anime_url']}"
         update_json(json.dumps(_list), app.config["LIST_URL"])
-
     return True
