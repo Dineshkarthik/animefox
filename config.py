@@ -11,12 +11,12 @@ from flask_appbuilder.security.manager import (
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Your App secret key
-SECRET_KEY = hashlib.sha1(os.urandom(128)).hexdigest()
+SECRET_KEY = os.environ.get("SECRET_KEY", "\2\1thisismyscretkey\1\2\e\y\y\h")
 
 # The SQLAlchemy connection string.
-# SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "app.db")
-SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URI"]
-
+SQLALCHEMY_DATABASE_URI = os.environ.get(
+    "SQLALCHEMY_DATABASE_URI", "sqlite:///" + os.path.join(basedir, "app.db")
+)
 # Flask-WTF flag for CSRF
 CSRF_ENABLED = True
 
@@ -113,10 +113,10 @@ IMG_UPLOAD_URL = "/static/uploads/"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
 }
-FROMADDR = os.environ["FROMADDR"]
-SMTP_HOST = os.environ["SMTP_HOST"]
-BCCADDR = os.environ["BCCADDR"].split(",")
-PASSWORD = os.environ["PASSWORD"]
-SECURITY_KEY = os.environ["SECURITY_KEY"]
+FROMADDR = os.environ.get("FROMADDR")
+SMTP_HOST = os.environ.get("SMTP_HOST")
+BCCADDR = os.environ.get("BCCADDR", "").split(",")
+PASSWORD = os.environ.get("PASSWORD")
+SECURITY_KEY = os.environ.get("SECURITY_KEY")
 ACTIVE_URL = "https://extendsclass.com/api/json-storage/bin/ccdfbed"
 LIST_URL = "https://extendsclass.com/api/json-storage/bin/fcbdaca"

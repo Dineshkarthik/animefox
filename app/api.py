@@ -40,3 +40,11 @@ class AnimeApi(BaseApi):
 
 
 appbuilder.add_api(AnimeApi)
+
+class AnimeModelApi(ModelRestApi):
+    resource_name = "anime"
+    datamodel = SQLAInterface(Anime)
+    allow_browser_login = True
+
+
+appbuilder.add_api(AnimeModelApi)
