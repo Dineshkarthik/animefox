@@ -1,6 +1,7 @@
 """Script to keep me posted on new anime episodes."""
 import os
 import json
+import logging
 from typing import List
 from datetime import datetime
 from email.mime.text import MIMEText
@@ -11,6 +12,7 @@ import jinja2
 import smtplib
 import requests
 from bs4 import BeautifulSoup
+from github import Github
 
 from . import app, db
 from .models import Anime
@@ -92,9 +94,14 @@ def send_mail(updated_list: list):
     server.quit()
 
 
-def update_json(data: dict, json_url: str):
-    headers = {"Security-key": app.config["SECURITY_KEY"]}
-    requests.put(json_url, headers=headers, data=data)
+def update_json(data: dict, path_: str):
+    g = Github(app.config["ACCESS_TOKEN"])
+    repo = g.get_repo(app.config["REPO_NAME"])
+    json_file = repo.get_contents(path_)
+    now: str = datetime.now().isoformat(" ", "seconds")
+    commit_message = f"update {json_file.name} @ {now}"
+    repo.update_file(json_file.path, commit_message, data, json_file.sha)
+    logging.info("updated %s @ %s", json_file.name, now)
 
 
 def crawler():
@@ -162,11 +169,9 @@ def crawler():
 
     if updated:
         send_mail(updated)
-        update_json(
-            json.dumps(get_anime(is_active=True)), app.config["ACTIVE_URL"]
-        )
+        update_json(json.dumps(get_anime(is_active=True)), "data/active.json")
         _list = get_anime(is_active=False)
         for anime in _list:
             anime["url"] = f"{anime['base_url']}/category/{anime['anime_url']}"
-        update_json(json.dumps(_list), app.config["LIST_URL"])
+        update_json(json.dumps(_list), "data/list.json")
     return True

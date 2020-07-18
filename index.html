@@ -116,13 +116,10 @@
 		}
 		function getData(){
 			$.ajax({
-				url : 'https://extendsclass.com/api/json-storage/bin/ccdfbed',
+				url : 'https://animefox.dineshkarthik.me/data/active.json',
 				type : 'GET',
 				dataType:'json',
-				headers: {
-					"Security-key": "u9&WSBGa!3Jg"
-				},
-				success : function(data) {              
+				success : function(data) {
 					render(data);
 				},
 				error : function(request,error)
@@ -131,25 +128,6 @@
 				}
 			});
 		};
-		$("#refresh").click(function(e) {
-			$("#limiter,#footer").fadeTo("slow", 0.15);
-			$("#loader").css("display", "block");
-			e.preventDefault();
-			$.ajax({
-				type: "GET",
-				url: "https://animefox.herokuapp.com/crawler",
-				success: function(result) {
-					$("#template-container").empty();
-					getData();
-					alert('Updated Successfully');
-					$("#limiter,#footer").css("opacity", "");
-					$("#loader").css("display", "none");
-				},
-				error: function(result) {
-					alert('Error Updating');
-				}
-			});
-		});
 		getData();
 	</script>
 </body>
