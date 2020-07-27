@@ -104,6 +104,25 @@ def update_json(data: dict, path_: str):
     logging.info("updated %s @ %s", json_file.name, now)
 
 
+def update_anime_list():
+    anime_list = get_anime(is_active=False)
+    trimmed_list: list = []
+    required_keys: list = [
+        "name",
+        "genre",
+        "released_year",
+        "status",
+        "other_name",
+        "url",
+        "image",
+    ]
+    for anime in anime_list:
+        anime["url"] = f"{anime['base_url']}/category/{anime['anime_url']}"
+        trimmed_list.append({key: anime[key] for key in required_keys})
+
+    update_json(json.dumps(trimmed_list), "data/list.json")
+
+
 def crawler():
     """Function to crawl and update anime schedule."""
     updated = []
@@ -170,8 +189,5 @@ def crawler():
     if updated:
         send_mail(updated)
         update_json(json.dumps(get_anime(is_active=True)), "data/active.json")
-        _list = get_anime(is_active=False)
-        for anime in _list:
-            anime["url"] = f"{anime['base_url']}/category/{anime['anime_url']}"
-        update_json(json.dumps(_list), "data/list.json")
+        update_anime_list()
     return True
