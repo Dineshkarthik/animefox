@@ -7,7 +7,7 @@ from flask_appbuilder.security.decorators import protect
 from . import appbuilder, db
 
 from .models import Anime
-from .kyuubi import crawler
+from .kyuubi import crawler, update_anime_list
 
 anime_schema = {"type": "object", "properties": {"name": {"type": "string"}}}
 
@@ -21,13 +21,13 @@ class AnimeApi(BaseApi):
 
     @expose("/refresh")
     # @protect()
-    def private(self):
-        """Say it's private
+    def refresh(self):
+        """Refresh anime list
         ---
         get:
           responses:
             200:
-              description: Say it's private
+              description: Refresh anime list
               content:
                 application/json:
                   schema:
@@ -38,8 +38,27 @@ class AnimeApi(BaseApi):
         crawler()
         return self.response(200, success=True)
 
+    @expose("/update-list")
+    def update_list(self):
+        """Update overall anime list
+        ---
+        get:
+          responses:
+            200:
+              description: Update overall anime list
+              content:
+                application/json:
+                  schema:
+                    type: object
+            401:
+              $ref: '#/components/responses/401'
+        """
+        update_anime_list()
+        return self.response(200, success=True)
+
 
 appbuilder.add_api(AnimeApi)
+
 
 class AnimeModelApi(ModelRestApi):
     resource_name = "anime"
