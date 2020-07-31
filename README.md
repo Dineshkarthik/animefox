@@ -30,10 +30,10 @@ Sample Email newsletter:
   align="center"
   src="https://github.com/Dineshkarthik/animefox/blob/master/email-template.jpg"
   width="450"
-  height="800"
+  height="900"
 />
 
-> Create an issue to subscribe to the newsletter
+> Create an issue or email to animefox@dineshkarthik.me to subscribe to the newsletter
 
 ## Animefox WEB UI - https://animefox.dineshkarthik.me
 
