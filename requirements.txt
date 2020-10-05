@@ -1,5 +1,5 @@
 beautifulsoup4==4.9.2
 requests==2.24.0
 Flask-AppBuilder==3.0.1
-psycopg2-binary==2.8.5
+psycopg2-binary==2.8.6
 PyGithub==1.53
