@@ -9,7 +9,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "\2\1thisismyscretkey\1\2\e\y\y\h")
 
 # The SQLAlchemy connection string.
 SQLALCHEMY_DATABASE_URI = os.environ.get(
-    "SQLALCHEMY_DATABASE_URI", "sqlite:///" + os.path.join(basedir, "app.db")
+    "DATABASE_URL", "sqlite:///" + os.path.join(basedir, "app.db")
 )
 # Flask-WTF flag for CSRF
 CSRF_ENABLED = True
