@@ -71,7 +71,7 @@
 							Last Updated
 						</div>
 					</div>
-					<% animeList  = _.sortBy(animeList, 'updated_at').reverse() %>
+					<% animeList  = _.sortBy(animeList, 'updated_at').reverse().filter(anime => anime.episode > 0) %>
 					<% _.each(animeList, function(anime) { %>
 						<div class="row">
 							<div class="cell" data-title="Anime">
