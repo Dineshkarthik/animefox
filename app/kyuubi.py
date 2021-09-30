@@ -139,6 +139,8 @@ def crawler():
                     ):
                         anime.episode = anime.episode + 1
                         anime.updated_at = _datetime
+                        if anime.status == "Upcoming":
+                            anime.status = "Ongoing"
                         updated.append(
                             dict(
                                 name=anime.name,
