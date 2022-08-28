@@ -1,0 +1,15 @@
+name: Anime-Refresh
+
+on:
+  schedule:
+    - cron:  '0 17 * * *'
+
+jobs:
+  pre-commit:
+    name: Refresh
+    runs-on: ubuntu-latest
+    steps:
+    - name: Anime Refresh
+      run: curl $RERESH_API_URL
+      env:
+        RERESH_API_URL: ${{ secrets.RERESH_API_URL }}
