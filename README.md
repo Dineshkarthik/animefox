@@ -12,7 +12,7 @@ This architecture  involves  three major components:
 ![architecture](architecture.png)
 
 
-## CMS - https://animefox.herokuapp.com
+## CMS - https://animefox.onrender.com
 
 > username: guest  
 password: guest
