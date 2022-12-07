@@ -1,7 +1,6 @@
 from flask import render_template
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask_appbuilder import ModelView, ModelRestApi
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 from . import appbuilder, db
 from .models import Anime
