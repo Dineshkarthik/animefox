@@ -1,5 +1,5 @@
 beautifulsoup4==4.12.2
-Flask-AppBuilder==4.3.5
+Flask-AppBuilder==4.3.10
 gunicorn==21.2.0
 jinja2==3.1.2
 psycopg2-binary==2.9.6
