@@ -3,5 +3,5 @@ Flask-AppBuilder==4.3.10
 gunicorn==21.2.0
 jinja2==3.1.2
 psycopg2-binary==2.9.8
-PyGithub==1.55
+PyGithub==2.2.0
 requests==2.31.0
